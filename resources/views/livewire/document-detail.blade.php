@@ -100,11 +100,7 @@
         <div class="px-4 py-3 flex justify-between">
             <span class="text-sm text-gray-500">Size</span>
             <span class="text-sm font-medium">
-                @if($document->file_size >= 1048576)
-                    {{ number_format($document->file_size / 1048576, 1) }} MB
-                @else
-                    {{ number_format($document->file_size / 1024, 1) }} KB
-                @endif
+                {{ App\Services\DocumentService::formatFileSize($document->file_size) }}
             </span>
         </div>
         @endif

@@ -1,22 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire;
 
 use App\Models\Document;
-use App\Services\PdfConverter;
+use App\Services\DocumentService;
+use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Native\Mobile\Facades\Dialog;
 use Native\Mobile\Facades\Share;
 
 #[Layout('layouts.app', ['title' => 'Document'])]
 class DocumentDetail extends Component
 {
     public Document $document;
+
     public bool $editing = false;
+
     public string $title = '';
+
     public string $category = '';
+
     public string $summary = '';
+
     public string $actionStatus = '';
 
     public function mount(Document $document): void
@@ -59,18 +66,19 @@ class DocumentDetail extends Component
 
     public function shareDocument(): void
     {
-        $pdfPath = $this->getOrCreatePdf();
+        $service = app(DocumentService::class);
+        $pdfPath = $service->getPdfForSharing($this->document);
 
-        if ($pdfPath) {
+        if ($pdfPath !== null) {
             Share::file(
                 $this->document->title,
                 "Scanned document: {$this->document->title} ({$this->document->page_count} pages)",
                 $pdfPath,
             );
-        } elseif (!empty($this->document->file_paths)) {
-            // Share first image if PDF conversion failed
+        } elseif (! empty($this->document->file_paths)) {
             $firstPath = $this->document->file_paths[0];
-            if (file_exists($firstPath)) {
+
+            if (is_string($firstPath) && file_exists($firstPath)) {
                 Share::file(
                     $this->document->title,
                     "Scanned document: {$this->document->title}",
@@ -84,13 +92,14 @@ class DocumentDetail extends Component
     {
         if ($this->document->output_format === 'pdf') {
             $this->actionStatus = 'Already in PDF format.';
+
             return;
         }
 
-        $pdfPath = $this->generatePdf();
+        $service = app(DocumentService::class);
+        $pdfPath = $service->convertToPdf($this->document);
 
-        if ($pdfPath) {
-            // Update document to PDF format
+        if ($pdfPath !== null) {
             $this->document->update([
                 'output_format' => 'pdf',
                 'file_paths' => [$pdfPath],
@@ -109,52 +118,12 @@ class DocumentDetail extends Component
         $this->redirect('/', navigate: true);
     }
 
-    public function render()
+    public function render(): View
     {
-        $images = [];
-        if ($this->document->output_format === 'jpeg' && !empty($this->document->file_paths)) {
-            foreach ($this->document->file_paths as $path) {
-                if (is_string($path) && file_exists($path)) {
-                    $data = file_get_contents($path);
-                    if ($data !== false) {
-                        $images[] = 'data:image/jpeg;base64,' . base64_encode($data);
-                    }
-                }
-            }
-        }
+        $service = app(DocumentService::class);
 
-        return view('livewire.document-detail', ['images' => $images]);
-    }
-
-    private function getOrCreatePdf(): ?string
-    {
-        // If already PDF, return existing path
-        if ($this->document->output_format === 'pdf' && !empty($this->document->file_paths)) {
-            $path = $this->document->file_paths[0];
-            if (file_exists($path)) {
-                return $path;
-            }
-        }
-
-        return $this->generatePdf();
-    }
-
-    private function generatePdf(): ?string
-    {
-        $paths = array_filter($this->document->file_paths, fn ($p) => is_string($p) && file_exists($p));
-
-        if (empty($paths)) {
-            return null;
-        }
-
-        $outputDir = storage_path('app/documents');
-        if (!is_dir($outputDir)) {
-            mkdir($outputDir, 0755, true);
-        }
-
-        $filename = 'doc_' . $this->document->id . '_' . time() . '.pdf';
-        $outputPath = $outputDir . '/' . $filename;
-
-        return app(PdfConverter::class)->imagesToPdf(array_values($paths), $outputPath);
+        return view('livewire.document-detail', [
+            'images' => $service->getPageImages($this->document),
+        ]);
     }
 }

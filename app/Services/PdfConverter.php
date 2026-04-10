@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use FPDF;
@@ -14,11 +16,11 @@ class PdfConverter
      */
     public function imagesToPdf(array $imagePaths, string $outputPath): ?string
     {
-        if (empty($imagePaths)) {
+        if ($imagePaths === []) {
             return null;
         }
 
-        $pdf = new Fpdf();
+        $pdf = new FPDF();
         $pdf->SetAutoPageBreak(false);
 
         foreach ($imagePaths as $imagePath) {
@@ -27,21 +29,19 @@ class PdfConverter
             }
 
             $imageSize = getimagesize($imagePath);
+
             if ($imageSize === false) {
                 continue;
             }
 
             [$widthPx, $heightPx] = $imageSize;
 
-            // Determine page orientation based on image aspect ratio
             $orientation = $widthPx > $heightPx ? 'L' : 'P';
             $pdf->AddPage($orientation);
 
-            // Get page dimensions in mm
             $pageWidth = $pdf->GetPageWidth();
             $pageHeight = $pdf->GetPageHeight();
 
-            // Scale image to fit the page
             $scaleW = $pageWidth / $widthPx;
             $scaleH = $pageHeight / $heightPx;
             $scale = min($scaleW, $scaleH);
@@ -49,7 +49,6 @@ class PdfConverter
             $displayWidth = $widthPx * $scale;
             $displayHeight = $heightPx * $scale;
 
-            // Center the image on the page
             $x = ($pageWidth - $displayWidth) / 2;
             $y = ($pageHeight - $displayHeight) / 2;
 

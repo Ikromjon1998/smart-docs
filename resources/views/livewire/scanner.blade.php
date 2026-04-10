@@ -68,7 +68,6 @@
             <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Scan Options</h3>
         </div>
 
-        {{-- Output format --}}
         <div class="px-4 py-3 flex items-center justify-between">
             <label class="text-sm font-medium text-gray-700">Output Format</label>
             <select wire:model="outputFormat" class="text-sm bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -77,7 +76,6 @@
             </select>
         </div>
 
-        {{-- JPEG quality --}}
         @if($outputFormat === 'jpeg')
         <div class="px-4 py-3">
             <div class="flex items-center justify-between mb-2">
@@ -89,7 +87,6 @@
         </div>
         @endif
 
-        {{-- Max pages --}}
         <div class="px-4 py-3 flex items-center justify-between">
             <div>
                 <label class="text-sm font-medium text-gray-700">Max Pages</label>
@@ -99,7 +96,6 @@
                    class="w-20 text-sm bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
         </div>
 
-        {{-- Gallery import --}}
         <div class="px-4 py-3 flex items-center justify-between">
             <div>
                 <label class="text-sm font-medium text-gray-700">Gallery Import</label>
@@ -111,6 +107,18 @@
             >
                 <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform {{ $galleryImport ? 'translate-x-6' : 'translate-x-1' }}"></span>
             </button>
+        </div>
+
+        <div class="px-4 py-3 flex items-center justify-between">
+            <div>
+                <label class="text-sm font-medium text-gray-700">Scanner Mode</label>
+                <p class="text-xs text-gray-400">Android only</p>
+            </div>
+            <select wire:model="scannerMode" class="text-sm bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="base">Base</option>
+                <option value="filter">Filter</option>
+                <option value="full">Full</option>
+            </select>
         </div>
     </div>
 </div>
