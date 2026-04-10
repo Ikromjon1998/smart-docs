@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\Document;
+use App\Models\Setting;
 use Ikromjon\DocumentScanner\Data\ScanOptions;
 use Ikromjon\DocumentScanner\Enums\OutputFormat;
+use Ikromjon\DocumentScanner\Enums\ScannerMode;
 use Ikromjon\DocumentScanner\Events\DocumentScanned;
 use Ikromjon\DocumentScanner\Events\ScanCancelled;
 use Ikromjon\DocumentScanner\Events\ScanFailed;
@@ -20,12 +22,22 @@ class Scanner extends Component
     public int $jpegQuality = 90;
     public int $maxPages = 0;
     public bool $galleryImport = true;
+    public string $scannerMode = 'full';
 
     public bool $scanning = false;
     public string $status = '';
     public string $error = '';
 
     public ?int $lastDocumentId = null;
+
+    public function mount(): void
+    {
+        $this->outputFormat = (string) Setting::get('default_format', config('document-scanner.default_output_format', 'jpeg'));
+        $this->jpegQuality = (int) Setting::get('default_quality', config('document-scanner.default_jpeg_quality', 90));
+        $this->maxPages = (int) Setting::get('default_max_pages', config('document-scanner.default_max_pages', 0));
+        $this->galleryImport = (bool) Setting::get('default_gallery_import', config('document-scanner.default_gallery_import', true));
+        $this->scannerMode = (string) Setting::get('default_scanner_mode', config('document-scanner.default_scanner_mode', 'full'));
+    }
 
     public function startScan(): void
     {
@@ -38,6 +50,7 @@ class Scanner extends Component
             outputFormat: OutputFormat::from($this->outputFormat),
             jpegQuality: $this->jpegQuality,
             galleryImport: $this->galleryImport,
+            scannerMode: ScannerMode::from($this->scannerMode),
         );
 
         DocumentScanner::scan($options);

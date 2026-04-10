@@ -9,7 +9,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased min-h-screen flex flex-col">
+<body class="bg-gray-50 text-gray-900 antialiased min-h-screen flex flex-col overflow-x-hidden">
     {{-- Safe area top spacer --}}
     <div class="h-[env(safe-area-inset-top)]"></div>
 

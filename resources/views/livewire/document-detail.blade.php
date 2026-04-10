@@ -1,4 +1,4 @@
-<div class="px-4 py-4 space-y-4">
+<div class="px-4 py-4 space-y-4 overflow-x-hidden">
     {{-- Status message --}}
     @if($actionStatus)
         <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-center text-sm text-blue-700 font-medium">
