@@ -68,29 +68,11 @@
                 <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform {{ $defaultGalleryImport ? 'translate-x-6' : 'translate-x-1' }}"></span>
             </button>
         </div>
-
-        <div class="px-4 py-3 flex items-center justify-between">
-            <div>
-                <label class="text-sm font-medium text-gray-700">Scanner Mode</label>
-                <p class="text-xs text-gray-400">Android only</p>
-            </div>
-            <select wire:model="defaultScannerMode" class="text-sm bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
-                <option value="base">Base</option>
-                <option value="filter">Filter</option>
-                <option value="full">Full</option>
-            </select>
-        </div>
     </div>
-
-    {{-- Save button --}}
-    <button wire:click="save"
-            class="w-full py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl active:bg-blue-700 transition-colors">
-        Save Settings
-    </button>
 
     @if($saved)
         <div class="bg-green-50 border border-green-200 rounded-xl p-3 text-center text-sm text-green-700 font-medium">
-            Settings saved. New scans will use these defaults.
+            Settings are applied per-session. Config defaults are set in config/document-scanner.php.
         </div>
     @endif
 

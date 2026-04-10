@@ -112,18 +112,5 @@
                 <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform {{ $galleryImport ? 'translate-x-6' : 'translate-x-1' }}"></span>
             </button>
         </div>
-
-        {{-- Scanner mode --}}
-        <div class="px-4 py-3 flex items-center justify-between">
-            <div>
-                <label class="text-sm font-medium text-gray-700">Scanner Mode</label>
-                <p class="text-xs text-gray-400">Android only</p>
-            </div>
-            <select wire:model="scannerMode" class="text-sm bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="base">Base</option>
-                <option value="filter">Filter</option>
-                <option value="full">Full</option>
-            </select>
-        </div>
     </div>
 </div>
