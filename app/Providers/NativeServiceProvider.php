@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -36,8 +38,6 @@ class NativeServiceProvider extends ServiceProvider
         return [
             \Ikromjon\DocumentScanner\DocumentScannerServiceProvider::class,
             \Native\Mobile\Providers\ShareServiceProvider::class,
-        
-        
         ];
     }
 }

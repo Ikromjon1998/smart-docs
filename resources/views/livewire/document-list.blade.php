@@ -42,7 +42,7 @@
                 <div class="text-right shrink-0">
                     <p class="text-xs text-gray-400">{{ $document->created_at->diffForHumans() }}</p>
                     @if($document->file_size > 0)
-                        <p class="text-xs text-gray-300 mt-1">{{ number_format($document->file_size / 1024, 1) }} KB</p>
+                        <p class="text-xs text-gray-300 mt-1">{{ App\Services\DocumentService::formatFileSize($document->file_size) }}</p>
                     @endif
                 </div>
             </div>
