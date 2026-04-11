@@ -26,15 +26,24 @@ class Settings extends Component
 
     public function mount(): void
     {
-        $this->defaultFormat = (string) Setting::get('default_format', config('document-scanner.default_output_format', 'jpeg'));
-        $this->defaultQuality = (int) Setting::get('default_quality', config('document-scanner.default_jpeg_quality', 90));
-        $this->defaultMaxPages = (int) Setting::get('default_max_pages', config('document-scanner.default_max_pages', 0));
-        $this->defaultGalleryImport = (bool) Setting::get('default_gallery_import', config('document-scanner.default_gallery_import', true));
-        $this->defaultScannerMode = (string) Setting::get('default_scanner_mode', config('document-scanner.default_scanner_mode', 'full'));
+        $settings = Setting::query()->pluck('value', 'key');
+
+        $this->defaultFormat = (string) ($settings['default_format'] ?? config('document-scanner.default_output_format', 'jpeg'));
+        $this->defaultQuality = (int) ($settings['default_quality'] ?? config('document-scanner.default_jpeg_quality', 90));
+        $this->defaultMaxPages = (int) ($settings['default_max_pages'] ?? config('document-scanner.default_max_pages', 0));
+        $this->defaultGalleryImport = (bool) ($settings['default_gallery_import'] ?? config('document-scanner.default_gallery_import', true));
+        $this->defaultScannerMode = (string) ($settings['default_scanner_mode'] ?? config('document-scanner.default_scanner_mode', 'full'));
     }
 
     public function save(): void
     {
+        $this->validate([
+            'defaultFormat' => 'required|in:jpeg,pdf',
+            'defaultQuality' => 'required|integer|min:1|max:100',
+            'defaultMaxPages' => 'required|integer|min:0',
+            'defaultScannerMode' => 'required|in:base,filter,full',
+        ]);
+
         Setting::set('default_format', $this->defaultFormat);
         Setting::set('default_quality', (string) $this->defaultQuality);
         Setting::set('default_max_pages', (string) $this->defaultMaxPages);

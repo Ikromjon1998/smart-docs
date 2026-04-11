@@ -41,11 +41,13 @@ class Scanner extends Component
 
     public function mount(): void
     {
-        $this->outputFormat = (string) Setting::get('default_format', config('document-scanner.default_output_format', 'jpeg'));
-        $this->jpegQuality = (int) Setting::get('default_quality', config('document-scanner.default_jpeg_quality', 90));
-        $this->maxPages = (int) Setting::get('default_max_pages', config('document-scanner.default_max_pages', 0));
-        $this->galleryImport = (bool) Setting::get('default_gallery_import', config('document-scanner.default_gallery_import', true));
-        $this->scannerMode = (string) Setting::get('default_scanner_mode', config('document-scanner.default_scanner_mode', 'full'));
+        $settings = Setting::query()->pluck('value', 'key');
+
+        $this->outputFormat = (string) ($settings['default_format'] ?? config('document-scanner.default_output_format', 'jpeg'));
+        $this->jpegQuality = (int) ($settings['default_quality'] ?? config('document-scanner.default_jpeg_quality', 90));
+        $this->maxPages = (int) ($settings['default_max_pages'] ?? config('document-scanner.default_max_pages', 0));
+        $this->galleryImport = (bool) ($settings['default_gallery_import'] ?? config('document-scanner.default_gallery_import', true));
+        $this->scannerMode = (string) ($settings['default_scanner_mode'] ?? config('document-scanner.default_scanner_mode', 'full'));
     }
 
     public function startScan(): void

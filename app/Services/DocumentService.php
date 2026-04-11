@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Document;
+use Illuminate\Support\Str;
 
 class DocumentService
 {
@@ -57,7 +58,7 @@ class DocumentService
             mkdir($outputDir, 0755, true);
         }
 
-        $filename = 'doc_'.$document->id.'_'.time().'.pdf';
+        $filename = 'doc_'.$document->id.'_'.Str::random(8).'.pdf';
         $outputPath = $outputDir.'/'.$filename;
 
         return $this->pdfConverter->imagesToPdf(array_values($paths), $outputPath);

@@ -16,6 +16,7 @@ class DocumentList extends Component
 
     public string $category = '';
 
+    /** No authorization check — this is a single-user NativePHP mobile app. */
     public function deleteDocument(int $id): void
     {
         Document::findOrFail($id)->delete();
@@ -26,7 +27,7 @@ class DocumentList extends Component
         $query = Document::query()->latest();
 
         if ($this->search !== '') {
-            $query->where('title', 'like', '%'.$this->search.'%');
+            $query->where('title', 'like', '%'.addcslashes($this->search, '%_').'%');
         }
 
         if ($this->category !== '') {
